@@ -3,15 +3,17 @@ import ssl
 
 BUFFER_SIZE = 1024
 
-class TCP:
+
+class UDP:
     def send_query(self, dns, query, ca_path):
-        """Send request to a secure DNS Server from TCP Socket"""
+        """Send request to a secure DNS Server from UDP Socket"""
         try:
+            server = (dns, 853)
+
             # tcp socket
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(100)
 
-            # tls context to wrap the socket connection
             ctx = ssl.create_default_context()
             ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
             ctx.verify_mode = ssl.CERT_REQUIRED
@@ -19,30 +21,28 @@ class TCP:
             ctx.load_verify_locations(ca_path)
 
             tls_wrapper = ctx.wrap_socket(sock, server_hostname=dns)
-            tls_wrapper.connect((dns, 853))
+            tls_wrapper.connect(server)
 
-            print("client request: ", query.decode("ISO-8859-1", "ignore"))
-            tls_wrapper.sendall(query)
-
+            udp_len = bytes([00]) + bytes([len(query)])
+            tcp_data = udp_len + query
+            tls_wrapper.send(tcp_data)
             data = tls_wrapper.recv(BUFFER_SIZE)
-            print("Answer from DNS: ")
+            print("Answer from DNS Server: ")
             print(data.decode("ISO-8859-1", "ignore"))
             return data
 
         except Exception as e:
-            print(str(e))
+            print(e)
         finally:
             tls_wrapper.close()
 
-    def handler(self, data, address, conn, dns_addr, ca_path):
+    def handler(self, data, address, socket, dns_addr, ca_path):
         answer = self.send_query(dns_addr, data, ca_path)
         if answer:
             try:
-                print(
-                    "proxy ok: ",
-                )
-                conn.send(answer)
+                print("Proxy Ok: %s", answer.decode("ISO-8859-1", "ignore"))
+                socket.sendto(answer[2:], address)
             except Exception as e:
                 print(e)
         else:
-            print("no response")
+            print(e)
