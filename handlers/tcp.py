@@ -4,7 +4,9 @@ import ssl
 import traceback
 
 BUFFER_SIZE = 4096
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO
+)
 
 
 class TCP:
@@ -34,7 +36,7 @@ class TCP:
 
         except Exception as e:
             traceback.format_exc()
-            logging.error("initiating tcp error: %s",str(e))
+            logging.error("initiating tcp error: %s", str(e))
         finally:
             tls_wrapper.close()
 

@@ -11,9 +11,12 @@ ADDRESS = "0.0.0.0"
 CA_CERT = "/etc/ssl/cert.pem"
 BUFFER_SIZE = 4096
 
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO
+)
 
-class DoTProxy():
+
+class DoTProxy:
     @staticmethod
     def listen_tcp(address=ADDRESS, port=PORT, dns=DNS, ca=CA_CERT):
         """Listening for DNS TCP requests"""
@@ -27,12 +30,15 @@ class DoTProxy():
             while True:
                 conn, addr = sock.accept()
                 data = conn.recv(BUFFER_SIZE)
-                logging.info("dns query from client: %s", data) # for string data.decode("ISO-8859-1", "replace")
+                logging.info(
+                    "dns query from client: %s", data
+                )  # for string data.decode("ISO-8859-1", "replace")
                 tcp.handler(data, address=addr, conn=conn, dns_addr=dns, ca_path=ca)
         except Exception as e:
             logging.error("listening tcp port error: %s", e)
         finally:
             sock.close()
+
     @staticmethod
     def listen_udp(address=ADDRESS, port=PORT, dns=DNS, ca=CA_CERT):
         """Listening for DNS UDP requests"""
@@ -43,13 +49,14 @@ class DoTProxy():
             sock.bind((address, port))
             while True:
                 data, addr = sock.recvfrom(BUFFER_SIZE)
-                logging.info("udp query: %s", data) # for string .decode("ISO-8859-1", "replace")
+                logging.info(
+                    "udp query: %s", data
+                )  # for string .decode("ISO-8859-1", "replace")
                 udp.handler(data, address=addr, socket=sock, dns=dns, cert=ca)
         except Exception as e:
             logging.error("listening udp port error: %s", e)
         finally:
             sock.close()
-
 
     def serve(self):
         args = (ADDRESS, PORT, DNS, CA_CERT)
