@@ -1,4 +1,4 @@
-.PHONY: build run test-udp test-tcp multiple-client
+.PHONY: build run test-udp test-tcp multiple-client cleanup
 
 SERVICE_NAME=dns-over-tcp
 SERVICE_PORT=53
@@ -30,3 +30,5 @@ multiple-client:
 	dig @0.0.0.0 -p $(SERVICE_PORT) coursera.com +tcp
 	dig @0.0.0.0 -p $(SERVICE_PORT) coursera.com
 
+cleanup:
+	docker rm -f $(SERVICE_NAME)
