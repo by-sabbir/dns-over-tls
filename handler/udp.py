@@ -1,7 +1,9 @@
 import socket
 import ssl
+import logging
 
 BUFFER_SIZE = 1024
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 
 class UDP:
@@ -27,22 +29,23 @@ class UDP:
             tcp_data = udp_len + query
             tls_wrapper.send(tcp_data)
             data = tls_wrapper.recv(BUFFER_SIZE)
-            print("Answer from DNS Server: ")
-            print(data.decode("ISO-8859-1", "ignore"))
+            logging.info("udp client request (first 10 bits): %s", tcp_data[:10])
+            logging.info("answer from DNS/UDP (first 10 bits): %s", data[:10])
+
             return data
 
         except Exception as e:
-            print(e)
+            logging.error("initializing udp: %s", e)
         finally:
             tls_wrapper.close()
 
-    def handler(self, data, address, socket, dns_addr, ca_path):
-        answer = self.send_query(dns_addr, data, ca_path)
+    def handler(self, data, address, socket, dns, cert):
+        answer = self.send_query(dns, data, cert)
         if answer:
             try:
-                print("Proxy Ok: %s", answer.decode("ISO-8859-1", "ignore"))
+                logging.info("udp proxy done!")
                 socket.sendto(answer[2:], address)
             except Exception as e:
-                print(e)
+                logging.error("initializing handler: %s", e)
         else:
-            print(e)
+            logging.error("no response from udp handler")

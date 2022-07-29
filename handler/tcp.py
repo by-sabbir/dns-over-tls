@@ -1,7 +1,10 @@
 import socket
 import ssl
+import logging
 
 BUFFER_SIZE = 1024
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
+
 
 class TCP:
     def send_query(self, dns, query, ca_path):
@@ -21,16 +24,16 @@ class TCP:
             tls_wrapper = ctx.wrap_socket(sock, server_hostname=dns)
             tls_wrapper.connect((dns, 853))
 
-            print("client request: ", query.decode("ISO-8859-1", "ignore"))
+            logging.info("tcp client request (first 10 bits): %s", query[:10])
             tls_wrapper.sendall(query)
 
             data = tls_wrapper.recv(BUFFER_SIZE)
-            print("Answer from DNS: ")
-            print(data.decode("ISO-8859-1", "ignore"))
+            logging.info("answer from DNS/TCP (first 10 bits): %s", data[:10])
+            # logging.info(data.decode("ISO-8859-1", "ignore"))
             return data
 
         except Exception as e:
-            print(str(e))
+            logging.error("initiating tcp error: %s",str(e))
         finally:
             tls_wrapper.close()
 
@@ -38,11 +41,9 @@ class TCP:
         answer = self.send_query(dns_addr, data, ca_path)
         if answer:
             try:
-                print(
-                    "proxy ok: ",
-                )
+                logging.info("tcp proxy done!")
                 conn.send(answer)
             except Exception as e:
-                print(e)
+                logging.error("initializing tcp handler: ", e)
         else:
-            print("no response")
+            logging.error("no response from tcp handler")
