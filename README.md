@@ -3,7 +3,7 @@
 
 ## Features
 - Accepts multiple client request
-- Handles Both DNS over TCP and UDP (multithreading)
+- Handles Both TCP and UDP requests using multithreading
 - Logs for client query, answer from DNS server, and errors
 
 ## Requirements
@@ -42,7 +42,7 @@
 #### 2. Docker
 - Build
 ```bash
-  make builddocker build -t dns-over-tcp-proxy .
+  docker build -t dns-over-tcp-proxy .
 ```
 - Run
 ```bash
