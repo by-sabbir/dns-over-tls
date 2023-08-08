@@ -50,7 +50,7 @@ class DoTProxy:
             while True:
                 data, addr = sock.recvfrom(BUFFER_SIZE)
                 logging.info(
-                    "udp query: %s", data
+                    "udp query from %s: %s", addr, data
                 )  # for string .decode("ISO-8859-1", "replace")
                 udp.handler(data, address=addr, socket=sock, dns=dns, cert=ca)
         except Exception as e:

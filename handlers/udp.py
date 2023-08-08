@@ -30,6 +30,7 @@ class UDP:
             tls_wrapper.connect(server)
 
             udp_len = bytes([00]) + bytes([len(query)])
+            logging.info(udp_len)
             tcp_data = udp_len + query
             tls_wrapper.send(tcp_data)
             data = tls_wrapper.recv(BUFFER_SIZE)
@@ -48,7 +49,7 @@ class UDP:
         answer = self.send_query(dns, data, cert)
         if answer:
             try:
-                logging.info("udp proxy done!")
+                logging.info("udp proxy done! %s %s", len(answer[:]), len(answer[2:]))
                 socket.sendto(answer[2:], address)
             except Exception as e:
                 logging.error("initializing handler: %s", e)

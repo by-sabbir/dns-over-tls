@@ -1,8 +1,8 @@
 .PHONY: build run test-udp test-tcp multiple-client cleanup
 
 SERVICE_NAME=dns-over-tcp
-SERVICE_PORT=53
-
+SERVICE_PORT=853
+SERVICE_IP=216.24.253.25
 build:
 	docker build -t $(SERVICE_NAME) .
 
@@ -13,22 +13,22 @@ logs:
 	docker logs -f $(SERVICE_NAME)
 
 test-udp:
-	dig @0.0.0.0 -p $(SERVICE_PORT) sabbir.dev
+	dig sabbir.dev @216.24.253.25 -p $(SERVICE_PORT) 
 
 test-tcp:
-	dig @0.0.0.0 -p $(SERVICE_PORT) sabbir.dev +tcp
+	dig sabbir.dev +tcp @216.24.253.25 -p $(SERVICE_PORT) 
 
 multiple-client:
-	dig @0.0.0.0 -p $(SERVICE_PORT) sabbir.dev +tcp
-	dig @0.0.0.0 -p $(SERVICE_PORT) sabbir.dev udp
-	dig @0.0.0.0 -p $(SERVICE_PORT) google.com +tcp
-	dig @0.0.0.0 -p $(SERVICE_PORT) google.com
-	dig @0.0.0.0 -p $(SERVICE_PORT) yahoo.com +tcp
-	dig @0.0.0.0 -p $(SERVICE_PORT) yahoo.com
-	dig @0.0.0.0 -p $(SERVICE_PORT) udemy.com +tcp
-	dig @0.0.0.0 -p $(SERVICE_PORT) udemy.com
-	dig @0.0.0.0 -p $(SERVICE_PORT) coursera.com +tcp
-	dig @0.0.0.0 -p $(SERVICE_PORT) coursera.com
+	dig sabbir.dev +tcp @216.24.253.25 -p $(SERVICE_PORT) 
+	dig sabbir.dev udp @216.24.253.25 -p $(SERVICE_PORT) 
+	dig google.com +tcp @216.24.253.25 -p $(SERVICE_PORT) 
+	dig google.com @216.24.253.25 -p $(SERVICE_PORT) 
+	dig yahoo.com +tcp @216.24.253.25 -p $(SERVICE_PORT) 
+	dig yahoo.com @216.24.253.25 -p $(SERVICE_PORT) 
+	dig udemy.com +tcp @216.24.253.25 -p $(SERVICE_PORT) 
+	dig udemy.com @216.24.253.25 -p $(SERVICE_PORT) 
+	dig coursera.com +tcp @216.24.253.25 -p $(SERVICE_PORT) 
+	dig coursera.com @216.24.253.25 -p $(SERVICE_PORT) 
 
 cleanup:
 	docker rm -f $(SERVICE_NAME)
