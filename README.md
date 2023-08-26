@@ -54,14 +54,9 @@
   dig @0.0.0.0 sabbir.dev +tcp   # for TCP
 ```
 
-> I have also hosted this dns proxy in my server, so that we can try it in the wild,
-```bash
-  dig @13.251.211.39 sabbir.dev +tcp   # tcp test
-  dig @13.251.211.39 sabbir.dev        # udp test
-```
-
 ## Improvements
 - Cache middlewire to decrease latency
 - IP Block whitelist/blacklist
 - Block malicious servers
 - DDoS protection
+- Ad Block
